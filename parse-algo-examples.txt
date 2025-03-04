@@ -1,0 +1,112 @@
+token_lut:
+    "a":  char_lower[0]
+    "b":  char_lower[1]
+    "c":  char_lower[2]
+    "d":  char_lower[3]
+    "e":  char_lower[4]
+    "f":  char_lower[5]
+    "g":  char_lower[6]
+    "h":  char_lower[7]
+    "i":  char_lower[8]
+    "j":  char_lower[9]
+    "k":  char_lower[10]
+    "l":  char_lower[11]
+    "m":  char_lower[12]
+    "n":  char_lower[13]
+    "o":  char_lower[14]
+    "p":  char_lower[15]
+    "q":  char_lower[16]
+    "r":  char_lower[17]
+    "s":  char_lower[18]
+    "t":  char_lower[19]
+    "u":  char_lower[20]
+    "v":  char_lower[21]
+    "w":  char_lower[22]
+    "x":  char_lower[23]
+    "y":  char_lower[24]
+    "z":  char_lower[25]
+    "A":  char_upper[0]
+    "B":  char_upper[1]
+    "C":  char_upper[2]
+    "D":  char_upper[3]
+    "E":  char_upper[4]
+    "F":  char_upper[5]
+    "G":  char_upper[6]
+    "H":  char_upper[7]
+    "I":  char_upper[8]
+    "J":  char_upper[9]
+    "K":  char_upper[10]
+    "L":  char_upper[11]
+    "M":  char_upper[12]
+    "N":  char_upper[13]
+    "O":  char_upper[14]
+    "P":  char_upper[15]
+    "Q":  char_upper[16]
+    "R":  char_upper[17]
+    "S":  char_upper[18]
+    "T":  char_upper[19]
+    "U":  char_upper[20]
+    "V":  char_upper[21]
+    "W":  char_upper[22]
+    "X":  char_upper[23]
+    "Y":  char_upper[24]
+    "Z":  char_upper[25]
+    "1":  char_digit_non_zero[0]
+    "2":  char_digit_non_zero[1]
+    "3":  char_digit_non_zero[2]
+    "4":  char_digit_non_zero[3]
+    "5":  char_digit_non_zero[4]
+    "6":  char_digit_non_zero[5]
+    "7":  char_digit_non_zero[6]
+    "8":  char_digit_non_zero[7]
+    "9":  char_digit_non_zero[8]
+    "0":  char_digit[1]
+    " ":  char_whitespace[0]
+    "\f": char_whitespace[1]
+    "\n": char_whitespace[2]
+    "\r": char_whitespace[3]
+    "\t": char_whitespace[4]
+    "\v": char_whitespace[5]
+
+non_terminal_lut:
+    char_lower: char_alpha[0]
+    char_upper: char_alpha[1]
+    char_alpha: {tok_id[0][1], tok_id[1][1]}
+    char_digit_non_zero: {char_digit[0], tok_nat_num[0][1][0]}
+    char_digit: {tok_nat_num[0][1][1], tok_id[1][2]}
+    char_whitespace: {tok_nat_num[1], tok_plus[1], tok_minus[1], tok_mul_div[1], tok_exp[1], tok_paren_l[1], tok_paren_r[1], tok_id[2], text[0]}
+    char_underscore: {tok_id[0][0], tok_id[1][0]}
+    tok_nat_num: int[1]
+    tok_plus: expr[0][1][0]
+    tok_minus: {int[0], expr[0][1][1]}
+    tok_mul_div: expr_non_add[0][1]
+    tok_exp: expr_non_mul[0][1]
+    tok_paren_l: expr_non_exp[0][1]
+    tok_paren_r: expr_non_exp[0][3]
+    tok_id: expr_non_exp[0][0]
+    int: expr_non_exp[1]
+    text: 
+    expr: {text[1], expr[0][0], expr[0][2], expr_non_exp[0][2]}
+    expr_non_add: {expr[1], expr_non_add[0][0], expr_non_add[0][2]}
+    expr_non_mul: {expr_non_add[1], expr_non_mul[0][0], expr_non_mul[0][2]}
+    expr_non_exp: {expr_non_mul[1]}
+
+example expression processing:
+
+"25 / 4"
+
+Consider "2"
+    "2": char_digit_non_zero[1]
+Consider whether char_digit_non_zero[1] fits with the current saved states of the parser.
+The key idea here is that we want to match a subtree to a target site in a partially processed expression of a 
+production rule. The important specifying factor here is the location of the cursor. This essentially cuts 
+the text into what goes into the tree of the target site and what goes into the current sub-tree. 
+In general, we maintain a list of partial productions, which repesents the set of possible trees we are 
+currently considering. For each, we also maintain whether that production is mid-rule or between rules. 
+When considering the content that begins at the cursor in the input stream, for each partial production, 
+depending on the state of that partial production, we take the following steps:
+1.  Mid-rule
+    1.  We ask ourselves whether we can build a sub-tree that "fits" into the current position 
+2.  Between rules
+    1.  I'm not sure if this can ever happen, since, when we finish up a production rule, we can simply 
+        immediately consider which rules can be partially constructed using the current production rule.

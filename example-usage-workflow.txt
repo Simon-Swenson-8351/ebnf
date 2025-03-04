@@ -1,0 +1,8 @@
+1.  Open the .ebnf file and copy it to a memory buffer.
+2.  Parse the ebnf memory buffer using the ebnf library. The output is an ebnf object.
+3.  Branch based off of what the user wants to do with the EBNF:
+    1.  Create the source code for a parser:
+    2.  Use the EBNF to parse a source file in process:
+3.  Open the source code file and copy it to a memory buffer.
+4.  Parse the source code memory buffer using the ebnf object and the ebnf library. The output is a parse tree.
+5.  Use or save the parse tree as desired.

@@ -1,0 +1,105 @@
+(* Taken and expanded from the LUA 5.4 reference manual. *)
+
+char_whitespace = " " | "\f" | "\n" | "\r" | "\t" | "\v";
+
+char_alpha = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | 
+    "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | 
+    "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z";
+char_digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+char_digit_hex = char_digit | "a" | "A" | "b" | "B" | "c" | "C" | "d" | "D" | "e" | "E" | "f" | "F";
+char_under = "_";
+
+identifier = ((char_alpha | char_under) , {char_alpha | char_digit | char_under}) - ("and" | "break" | "do" | "else" | 
+    "elseif" | "end" | "false" | "for" | "function" | "goto" | "if" | "in" | "local" | "nil" | "not" | "or" | 
+    "repeat" | "return" | "then" | "true" | "until" | "while");
+
+natural_number = "0" | char_digit - "0" , {char_digit};
+
+numeral_int_hex = ("0x" | "0X") , char_digit_hex , {char_digit_hex}
+numeral_int_dec = ["-"] , natural_number
+numeral_int = numeral_int_hex | numeral_int_dec
+
+numeral_float_hex = numeral_int_hex , ["." , {char_digit_hex}] , [("p" | "P") , ["+" | "-"] , {char_digit_hex}]
+numeral_float_dec = numeral_int_dec , ["." , natural_number] , [("e" | "E") , ["+" | "-"] , natural_number]
+numeral_float = numeral_float_hex | numeral_float_dec
+
+numeral = numeral_int | numeral_float
+
+short_char_any_double = (? any_char ? - "\"") | "\\\""
+short_char_any_single = (? any_char ? - "'") | "\\'"
+short_literal_string = ("\"" , {short_char_any_double} , "\"") | ("'" , {short_char_any_single} , "'");
+
+long_literal_string_inner = "[" , { ? any_char ? } , "]"
+long_literal_string_mid = ("=" , long_literal_string_mid , "=") | long_literal_string_inner
+long_literal_string = "[" , long_literal_string_mid , "]"
+
+literal_string = short_literal_string | long_literal_string
+
+chunk = block
+
+block = {stat} [retstat]
+
+stat =  ";" | 
+        varlist , "=" , explist | 
+        functioncall | 
+        label | 
+        "break" | 
+        "goto" , identifier | 
+        "do" , block , "end" | 
+        "while" , exp , "do" , block , "end" | 
+        "repeat" , block , "until" , exp | 
+        "if" , exp , "then" , block , {"elseif" exp "then" block} , ["else" , block] , "end" | 
+        "for" , identifier , "=" , exp , "," , exp , ["," , exp] , "do" , block , "end" | 
+        "for" , namelist , "in" , explist , "do" , block , "end" | 
+        "function" , funcname , funcbody | 
+        "local function" , identifier , funcbody | 
+        "local" , attnamelist , ["=" , explist]
+        ;
+
+attnamelist =  identifier , attrib , {"," , identifier , attrib}
+
+attrib = ["<" , identifier , ">"]
+
+retstat = "return" , [explist] , [";"]
+
+label = "::" , identifier , "::"
+
+funcname = identifier , {"." , identifier} , [":" , identifier]
+
+varlist = var , {"," , var}
+
+var =  identifier | prefixexp , "[" , exp , "]" | prefixexp , "." , identifier 
+
+namelist = identifier , {"," , identifier}
+
+explist = exp , {"," , exp}
+
+exp =  "nil" | "false" | "true" | numeral | literal_sring | "..." | functiondef | 
+        prefixexp | tableconstructor | exp , binop , exp | unop , exp 
+
+prefixexp = var | functioncall | "(" , exp , ")"
+
+functioncall =  prefixexp , args | prefixexp , ":" , identifier , args 
+
+args =  "(" , [explist] , ")" | tableconstructor | literal_string 
+
+functiondef = "function" , funcbody
+
+funcbody = "(" , [parlist] , ")" , block , "end"
+
+parlist = namelist , ["," , "..."] | "..."
+
+tableconstructor = "{" , [fieldlist] , "}"
+
+fieldlist = field , {fieldsep , field} , [fieldsep]
+
+field = "[" , exp , "]" , "=" , exp | identifier , "=" , exp | exp
+
+fieldsep = "," | ";"
+
+binop =  "+" | "-" | "*" | "/" | "//" | "^" | "%" | 
+        "&" | "~" | "|" | ">>" | "<<" | ".." | 
+        "<" | "<=" | ">" | ">=" | "==" | "~=" | 
+        "and" | "or"
+
+unop = "-" | "not" | "#" | "~"

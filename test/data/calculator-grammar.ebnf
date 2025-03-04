@@ -1,0 +1,33 @@
+(* PEMDAS
+   Parentheses
+   Exponentiation
+   Multiplication & Division
+   Addition & Subtraction
+*)
+
+char_lower          = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | 
+                      "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+char_upper          = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | 
+                      "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" ;
+char_alpha          = char_lower | char_upper ;
+char_digit_non_zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+char_digit          = char_digit_non_zero | "0" ;
+char_whitespace     = " " | "\f" | "\n" | "\r" | "\t" | "\v" ;
+char_underscore     = "_" ;
+
+tok_nat_num        = ("0" | char_digit_non_zero , {char_digit}) , {char_whitespace} ;
+tok_plus           = "+" , {char_whitespace} ;
+tok_minus          = "-" , {char_whitespace} ;
+tok_mul_div        = ("*" | "/") , {char_whitespace} ;
+tok_exp            = "^" , {char_whitespace} ;
+tok_paren_l        = "(" , {char_whitespace} ;
+tok_paren_r        = ")" , {char_whitespace} ;
+tok_id             = (char_underscore | char_alpha) , {char_underscore | char_alpha | char_digit} , {char_whitespace} ;
+
+int = [tok_minus] , tok_nat_num ;
+
+text         = {char_whitespace} , expr ;
+expr         = expr         , (tok_plus | tok_minus) , expr         | expr_non_add ;
+expr_non_add = expr_non_add , tok_mul_div            , expr_non_add | expr_non_mul ;
+expr_non_mul = expr_non_mul , tok_exp                , expr_non_mul | expr_non_exp ;
+expr_non_exp = [tok_id] , tok_paren_l , expr , tok_paren_r          | int ;

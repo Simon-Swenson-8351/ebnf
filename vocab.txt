@@ -1,0 +1,10 @@
+Derivation Indicator: A derivation indicator is an indicator of which derivation rules were used in deriving a 
+particular string or substring. The derivation indicator does not include the derivation indicators of children. The 
+derivation indicator is expressed in a series of subscripts [], where each subscript represents which 
+derivation rule was applied at a given level of the expression.
+
+Location Indicator: A location indicator indicates a rule and location within the rule's expression. Location 
+Indicators are most commonly used determine which derivations could possibly apply to the substring of the source file 
+at the processing cursor's current position. Location indicators do not include the location indicators of children. 
+Location indicators are expressed in a series of subscripts [], where each subscript represents the sub-expression in 
+which the location is found.

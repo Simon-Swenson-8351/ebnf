@@ -1,0 +1,13 @@
+Key insight: Strings can be found in any production rule, even non-terminals. This means that there needs to be some 
+top-down parsing as well as bottom-up parsing. If we wanted to avoid any top-down parsing, we could enforce an 
+additional constraint for the user to only use strings in terminals. However, I want to keep things as close to 
+baseline EBNF as possible.
+
+1.  Consider the next n characters in the parse string.
+2.  Search the production rules for any strings that match the next n characters. (On a high level, we will now 
+    determine whether this production rule leads to a contradiction.)
+3.  Branch to determine if the production rule in its own sub-tree is valid:
+    1.  If the current production rule is a terminal:
+        1.  The string parsing in step 2 ensures that this terminal is valid.
+    2.  If the current production rule is not a terminal:
+        1.  Use the expression of the production rule to 
