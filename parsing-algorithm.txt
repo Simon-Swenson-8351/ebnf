@@ -1,7 +1,33 @@
+The algorithm begins by iterating over the input stream from left to right. As the algorithm parses the strings, it 
+keeps track of all partially created, still valid trees. (Note, this set also includes the empty tree, used for the 
+very first iteration of the algorithm.) At each iteration of the algorithm, the algorithm consults 
+this memo of partial trees to determine what is expected next. Note that because literals found in the grammar may not 
+be single characters, for each iteration, each sub-tree may be either:
+1.  In the process of matching a string in the input to a string literal in the grammar.
+2.  Beginning to look for a new string literal in the grammar whose first character matches the current character in 
+    the input stream.
+
 Key insight: Strings can be found in any production rule, even non-terminals. This means that there needs to be some 
 top-down parsing as well as bottom-up parsing. If we wanted to avoid any top-down parsing, we could enforce an 
-additional constraint for the user to only use strings in terminals. However, I want to keep things as close to 
-baseline EBNF as possible.
+additional constraint for the user to only use strings in terminals. We could also process the parsed EBNF grammar to 
+create new terminals for each string literal before we begin parsing a string. However, I want to keep things as close to 
+baseline EBNF as possible. An alternative algorithm is also top-down, recursive, but the naive approach here needs to 
+iterate over each possible cut location at each level of the tree, which seems inefficient.
+
+Another key idea here is that, in general, we want to match a new subtree whose leftmost character is the character at the 
+input stream's cursor's position to a target site in a partially processed expression of a production rule. The 
+important specifying factor here is the location of the cursor. This essentially cuts the text into what goes into the 
+tree of the target site and what goes into the current sub-tree. This also allows us to memoize trees - both for the 
+left and right - for any given cut position. Since this algorithm processes the input stream left to right, we know 
+that the current set of memoized trees for the substring from the first character of the input to the cut position is 
+complete. At this point, we can apply the algorithm recursively to the substring starting at the cursor's current 
+position and ending at the end of the input stream to determine the set of sub-trees that match the substring.
+
+Another key idea is that we want to be able to determine the possible valid productions (whether in progress or 
+complete) given a current in-progress subtree and the next character. Essentially, a look-ahead table would speed up 
+the processing significantly, but this is *not* a look-ahead table in the traditional sense of an ll(k) parser. 
+Instead, given a current incomplete tree (with a marked current position) and the next character (or character class), 
+returns a list of both incomplete or complete trees that could be produced.
 
 1.  Consider the next n characters in the parse string.
 2.  Search the production rules for any strings that match the next n characters. (On a high level, we will now 

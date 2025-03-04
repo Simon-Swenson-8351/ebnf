@@ -95,18 +95,20 @@ example expression processing:
 
 "25 / 4"
 
-Consider "2"
+Begin the character processing.
+Consider "2".
     "2": char_digit_non_zero[1]
-Consider whether char_digit_non_zero[1] fits with the current saved states of the parser.
-The key idea here is that we want to match a subtree to a target site in a partially processed expression of a 
-production rule. The important specifying factor here is the location of the cursor. This essentially cuts 
-the text into what goes into the tree of the target site and what goes into the current sub-tree. 
-In general, we maintain a list of partial productions, which repesents the set of possible trees we are 
-currently considering. For each, we also maintain whether that production is mid-rule or between rules. 
-When considering the content that begins at the cursor in the input stream, for each partial production, 
-depending on the state of that partial production, we take the following steps:
-1.  Mid-rule
-    1.  We ask ourselves whether we can build a sub-tree that "fits" into the current position 
-2.  Between rules
-    1.  I'm not sure if this can ever happen, since, when we finish up a production rule, we can simply 
-        immediately consider which rules can be partially constructed using the current production rule.
+Begin the tree generation.
+Consider char_digit_non_zero[1] and construct as big of a tree as we can.
+char_digit_non_zero top level expr is a choice expr, satisfied by char_digit_non_zero[1], so a new sub-tree can be made 
+with root char_digit_non_zero.
+Consider char_digit_non_zero.
+    char_digit_non_zero: {char_digit[0], tok_nat_num[0][1][0]}
+For char_digit[0]:
+    char_digit top level expr is a choice expr, satisified by char_digit[0] with root char_digit.
+    Consider char_digit.
+        char_digit: {tok_nat_num[0][1][1], tok_id[1][2]}
+    For tok_nat_num[0][1][1]:
+        We need to determine if tok_nat_num[0][1][1] is a valid start to tok_nat_num.
+    For tok_id[1][2]:
+For tok_nat_num[0][1][0]:
