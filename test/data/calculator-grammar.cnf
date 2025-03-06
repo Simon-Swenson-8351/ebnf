@@ -1,0 +1,285 @@
+char_digit_zero -> "0"
+char_digit_non_zero -> "1"
+char_digit_non_zero -> "2"
+char_digit_non_zero -> "3"
+char_digit_non_zero -> "4"
+char_digit_non_zero -> "5"
+char_digit_non_zero -> "6"
+char_digit_non_zero -> "7"
+char_digit_non_zero -> "8"
+char_digit_non_zero -> "9"
+char_digit -> "0"
+char_digit -> "1"
+char_digit -> "2"
+char_digit -> "3"
+char_digit -> "4"
+char_digit -> "5"
+char_digit -> "6"
+char_digit -> "7"
+char_digit -> "8"
+char_digit -> "9"
+char_whitespace -> " "
+char_whitespace -> "\f"
+char_whitespace -> "\n"
+char_whitespace -> "\r"
+char_whitespace -> "\t"
+char_whitespace -> "\v"
+rep_char_digit -> "0"
+rep_char_digit -> "1"
+rep_char_digit -> "2"
+rep_char_digit -> "3"
+rep_char_digit -> "4"
+rep_char_digit -> "5"
+rep_char_digit -> "6"
+rep_char_digit -> "7"
+rep_char_digit -> "8"
+rep_char_digit -> "9"
+rep_char_digit -> char_digit rep_char_digit
+rep_char_ws -> " "
+rep_char_ws -> "\f"
+rep_char_ws -> "\n"
+rep_char_ws -> "\r"
+rep_char_ws -> "\t"
+rep_char_ws -> "\v"
+rep_char_ws -> char_whitespace rep_char_ws
+tok_nat_num -> "0"
+tok_nat_num -> "1"
+tok_nat_num -> "2"
+tok_nat_num -> "3"
+tok_nat_num -> "4"
+tok_nat_num -> "5"
+tok_nat_num -> "6"
+tok_nat_num -> "7"
+tok_nat_num -> "8"
+tok_nat_num -> "9"
+tok_nat_num -> char_digit_non_zero rep_char_digit
+tok_nat_num -> char_digit_zero rep_char_ws
+tok_nat_num -> char_digit_non_zero rep_char_ws
+tok_nat_num_4_0 -> char_digit_non_zero rep_char_digit
+tok_nat_num -> tok_nat_num_4_0 rep_char_ws
+tok_neg -> "-"
+tok_neg_1_00 -> "n"
+tok_neg_1_10 -> "e"
+tok_neg_1_20 -> "g"
+tok_neg_1_01 -> tok_neg_1_00 tok_neg_1_10
+tok_neg -> tok_neg_1_01 tok_neg_1_20
+tok_neg_2_0 -> "-"
+tok_neg -> tok_neg_2_0 rep_char_ws
+tok_neg_3_0 -> tok_neg_1_01 tok_neg_1_20
+tok_neg -> tok_neg_3_0 rep_char_ws
+tok_add -> "+"
+tok_add_1_00 -> "a"
+tok_add_1_10 -> "d"
+tok_add_1_20 -> "d"
+tok_add_1_01 -> tok_add_1_00 tok_add_1_10
+tok_add -> tok_add_1_01 tok_add_1_20
+tok_add_2_0 -> "+"
+tok_add -> tok_add_2_0 rep_char_ws
+tok_add_3_0 -> tok_add_1_01 tok_add_1_20
+tok_add -> tok_add_3_0 rep_char_ws
+tok_sub -> "-"
+tok_sub_1_00 -> "s"
+tok_sub_1_10 -> "u"
+tok_sub_1_20 -> "b"
+tok_sub_1_01 -> tok_sub_1_00 tok_sub_1_10
+tok_sub -> tok_sub_1_01 tok_sub_1_20
+tok_sub_2_0 -> "-"
+tok_sub -> tok_sub_2_0 rep_char_ws
+tok_sub_3_0 -> tok_sub_1_01 tok_sub_1_20
+tok_sub -> tok_sub_3_0 rep_char_ws
+tok_mul -> "*"
+tok_mul_1_00 -> "m"
+tok_mul_1_10 -> "u"
+tok_mul_1_20 -> "l"
+tok_mul_1_01 -> tok_mul_1_00 tok_mul_1_10
+tok_mul -> tok_mul_1_01 tok_mul_1_20
+tok_mul_2_0 -> "*"
+tok_mul -> tok_mul_2_0 rep_char_ws
+tok_mul_3_0 -> tok_mul_1_01 tok_mul_1_20
+tok_mul -> tok_mul_3_0 rep_char_ws
+tok_div -> "/"
+tok_div_1_00 -> "d"
+tok_div_1_10 -> "i"
+tok_div_1_20 -> "v"
+tok_div_1_01 -> tok_div_1_00 tok_div_1_10
+tok_div -> tok_div_1_01 tok_div_1_20
+tok_div_2_0 -> "/"
+tok_div -> tok_div_2_0 rep_char_ws
+tok_div_3_0 -> tok_div_1_01 tok_div_1_20
+tok_div -> tok_div_3_0 rep_char_ws
+tok_exp -> "^"
+tok_exp_1_0 -> "e"
+tok_exp_1_1 -> "x"
+tok_exp_1_2 -> "p"
+tok_exp_1_0c1 -> tok_exp_1_0 tok_exp_1_1
+tok_exp -> tok_exp_1_0c1 tok_exp_1_2
+tok_exp_2_0 -> "^"
+tok_exp -> tok_exp_2_0 rep_char_ws
+tok_exp_3_0c1 -> tok_exp_1_0c1 tok_exp_1_2
+tok_exp -> tok_exp_3_0c1 rep_char_ws
+tok_paren_l -> "("
+tok_paren_l_1_0 -> "("
+tok_paren_l -> tok_paren_l_1_0 rep_char_ws
+tok_paren_r -> ")"
+tok_paren_r_1_0 -> ")"
+tok_paren_r -> tok_paren_r_1_0 rep_char_ws
+tok_sqrt_0_0 -> "s"
+tok_sqrt_0_1 -> "q"
+tok_sqrt_0_2 -> "r"
+tok_sqrt_0_3 -> "t"
+tok_sqrt_0_0c1 -> tok_sqrt_0_0 tok_sqrt_0_1
+tok_sqrt_0_0c1c2 -> tok_sqrt_0_0c1 tok_sqrt_0_2
+tok_sqrt -> tok_sqrt_0_0c1c2 tok_sqrt_0_3
+tok_sqrt_1 -> tok_sqrt_0_0c1c2 tok_sqrt_0_3
+tok_sqrt -> tok_sqrt_1 rep_char_ws
+int -> "0"
+int -> "1"
+int -> "2"
+int -> "3"
+int -> "4"
+int -> "5"
+int -> "6"
+int -> "7"
+int -> "8"
+int -> "9"
+int -> char_digit_non_zero rep_char_digit
+int -> char_digit_zero rep_char_ws
+int -> char_digit_non_zero rep_char_ws
+int -> tok_nat_num_4_0 rep_char_ws
+int -> tok_neg tok_nat_num
+func_name -> tok_sqrt_0_0c1c2 tok_sqrt_0_3
+func_name -> tok_sqrt_1 rep_char_ws
+text_0_0c1 -> token_paren_l expr
+text -> text_0_0c1 token_paren_r
+text_1_0c1 -> func_name tok_paren_l
+text_1_0c2 -> text_1_0c1 expr
+text -> text_1_0c2 tok_paren_r
+text -> "0"
+text -> "1"
+text -> "2"
+text -> "3"
+text -> "4"
+text -> "5"
+text -> "6"
+text -> "7"
+text -> "8"
+text -> "9"
+text -> char_digit_non_zero rep_char_digit
+text -> char_digit_zero rep_char_ws
+text -> char_digit_non_zero rep_char_ws
+text -> tok_nat_num_4_0 rep_char_ws
+text -> tok_neg tok_nat_num
+text_17_0c1 -> expr_non_mul tok_exp
+text -> text_17_0c1 expr_non_exp
+text_18_0c1 -> expr_non_add tok_mul
+text -> text_18_0c1 expr_non_mul
+text_19_0c1 -> expr_non_add tok_div
+text -> text_19_0c1 expr_non_mul
+text_20_0c1 -> expr tok_add
+text -> text_20_0c1 expr_non_add
+text_21_0c1 -> expr tok_sub
+text -> text_21_0c1 expr_non_add
+text -> rep_char_ws expr
+expr_0_0c1 -> token_paren_l expr
+expr -> expr_0_0c1 token_paren_r
+expr_1_0c1 -> func_name tok_paren_l
+expr_1_0c2 -> expr_1_0c1 expr
+expr -> expr_1_0c2 tok_paren_r
+expr -> "0"
+expr -> "1"
+expr -> "2"
+expr -> "3"
+expr -> "4"
+expr -> "5"
+expr -> "6"
+expr -> "7"
+expr -> "8"
+expr -> "9"
+expr -> char_digit_non_zero rep_char_digit
+expr -> char_digit_zero rep_char_ws
+expr -> char_digit_non_zero rep_char_ws
+expr -> tok_nat_num_4_0 rep_char_ws
+expr -> tok_neg tok_nat_num
+expr_17_0c1 -> expr_non_mul tok_exp
+expr -> expr_17_0c1 expr_non_exp
+expr_18_0c1 -> expr_non_add tok_mul
+expr -> expr_18_0c1 expr_non_mul
+expr_19_0c1 -> expr_non_add tok_div
+expr -> expr_19_0c1 expr_non_mul
+expr_20_0c1 -> expr tok_add
+expr -> expr_20_0c1 expr_non_add
+expr_21_0c1 -> expr tok_sub
+expr -> expr_21_0c1 expr_non_add
+expr_non_add_0_0c1 -> token_paren_l expr
+expr_non_add -> expr_non_add_0_0c1 token_paren_r
+expr_non_add_1_0c1 -> func_name tok_paren_l
+expr_non_add_1_0c2 -> expr_non_add_1_0c1 expr
+expr_non_add -> expr_non_add_1_0c2 tok_paren_r
+expr_non_add -> "0"
+expr_non_add -> "1"
+expr_non_add -> "2"
+expr_non_add -> "3"
+expr_non_add -> "4"
+expr_non_add -> "5"
+expr_non_add -> "6"
+expr_non_add -> "7"
+expr_non_add -> "8"
+expr_non_add -> "9"
+expr_non_add -> char_digit_non_zero rep_char_digit
+expr_non_add -> char_digit_zero rep_char_ws
+expr_non_add -> char_digit_non_zero rep_char_ws
+expr_non_add -> tok_nat_num_4_0 rep_char_ws
+expr_non_add -> tok_neg tok_nat_num
+expr_non_add_17_0c1 -> expr_non_mul tok_exp
+expr_non_add -> expr_non_add_17_0c1 expr_non_exp
+expr_non_add_18_0c1 -> expr_non_add tok_mul
+expr_non_add -> expr_non_add_18_0c1 expr_non_mul
+expr_non_add_19_0c1 -> expr_non_add tok_div
+expr_non_add -> expr_non_add_19_0c1 expr_non_mul
+expr_non_mul_0_0c1 -> token_paren_l expr
+expr_non_mul -> expr_non_mul_0_0c1 token_paren_r
+expr_non_mul_1_0c1 -> func_name tok_paren_l
+expr_non_mul_1_0c2 -> expr_non_mul_1_0c1 expr
+expr_non_mul -> expr_non_mul_1_0c2 tok_paren_r
+expr_non_mul -> "0"
+expr_non_mul -> "1"
+expr_non_mul -> "2"
+expr_non_mul -> "3"
+expr_non_mul -> "4"
+expr_non_mul -> "5"
+expr_non_mul -> "6"
+expr_non_mul -> "7"
+expr_non_mul -> "8"
+expr_non_mul -> "9"
+expr_non_mul -> char_digit_non_zero rep_char_digit
+expr_non_mul -> char_digit_zero rep_char_ws
+expr_non_mul -> char_digit_non_zero rep_char_ws
+expr_non_mul -> tok_nat_num_4_0 rep_char_ws
+expr_non_mul -> tok_neg tok_nat_num
+expr_non_mul_17_0c1 -> expr_non_mul tok_exp
+expr_non_mul -> expr_non_mul_17_0c1 expr_non_exp
+expr_non_exp_0_0c1 -> token_paren_l expr
+expr_non_exp -> expr_non_exp_0_0c1 token_paren_r
+expr_non_exp_1_0c1 -> func_name tok_paren_l
+expr_non_exp_1_0c2 -> expr_non_exp_1_0c1 expr
+expr_non_exp -> expr_non_exp_1_0c2 tok_paren_r
+expr_non_exp -> "0"
+expr_non_exp -> "1"
+expr_non_exp -> "2"
+expr_non_exp -> "3"
+expr_non_exp -> "4"
+expr_non_exp -> "5"
+expr_non_exp -> "6"
+expr_non_exp -> "7"
+expr_non_exp -> "8"
+expr_non_exp -> "9"
+expr_non_exp -> char_digit_non_zero rep_char_digit
+expr_non_exp -> char_digit_zero rep_char_ws
+expr_non_exp -> char_digit_non_zero rep_char_ws
+expr_non_exp -> tok_nat_num_4_0 rep_char_ws
+expr_non_exp -> tok_neg tok_nat_num
+expr_paren_0_0c1 -> token_paren_l expr
+expr_paren -> expr_paren_0_0c1 token_paren_r
+expr_func_0_0c1 -> func_name tok_paren_l
+expr_func_0_0c2 -> expr_func_0_0c1 expr
+expr_func -> expr_func_0_0c2 tok_paren_r

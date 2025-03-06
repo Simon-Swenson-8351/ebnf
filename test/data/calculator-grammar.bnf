@@ -1,0 +1,43 @@
+char_lower          = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | 
+                      "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+char_upper          = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | 
+                      "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" ;
+char_alpha          = char_lower | char_upper ;
+char_digit_non_zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+char_digit          = char_digit_non_zero | "0" ;
+char_whitespace     = " " | "\f" | "\n" | "\r" | "\t" | "\v" ;
+char_underscore     = "_" ;
+
+rep_char_digit = char_digit | char_digit rep_char_digit ;
+rep_char_ws = char_whitespace | char_whitespace rep_char_ws ;
+tok_nat_num = "0" | char_digit_non_zero | char_digit_non_zero rep_char_digit | "0" rep_char_ws | 
+    char_digit_non_zero rep_char_ws | char_digit_non_zero rep_char_digit rep_char_ws ;
+tok_neg = "-" | "n" "e" "g" | "-" rep_char_ws | "n" "e" "g" rep_char_ws ;
+tok_add = "+" | "a" "d" "d" | "+" rep_char_ws | "a" "d" "d" rep_char_ws ;
+tok_sub = "-" | "s" "u" "b" | "-" rep_char_ws | "s" "u" "b" rep_char_ws ;
+tok_mul = "*" | "m" "u" "l" | "*" rep_char_ws | "m" "u" "l" rep_char_ws ;
+tok_div = "/" | "d" "i" "v" | "/" rep_char_ws | "d" "i" "v" rep_char_ws ;
+tok_exp = "^" | "e" "x" "p" | "^" rep_char_ws | "e" "x" "p" rep_char_ws ;
+tok_paren_l = "(" | "(" rep_char_ws ;
+tok_paren_r = ")" | ")" rep_char_ws ;
+tok_sqrt = "s" "q" "r" "t" | "s" "q" "r" "t" rep_char_ws ;
+tok_sin = "s" "i" "n" | "s" "i" "n" rep_char_ws ;
+tok_cos = "c" "o" "s" | "c" "o" "s" rep_char_ws ;
+tok_tan = "t" "a" "n" | "t" "a" "n" rep_char_ws ;
+tok_invsin = "i" "n" "v" "s" "i" "n" | "i" "n" "v" "s" "i" "n" rep_char_ws ;
+tok_invcos = "i" "n" "v" "c" "o" "s" | "i" "n" "v" "c" "o" "s" rep_char_ws ;
+tok_invtan = "i" "n" "v" "t" "a" "n" | "i" "n" "v" "t" "a" "n" rep_char_ws ;
+tok_comma = "," | "," rep_char_ws ;
+
+int = tok_nat_num | tok_neg tok_nat_num ;
+func_name = tok_sqrt | tok_sin | tok_cos | tok_tan | tok_invsin | tok_invcos | tok_invtan ;
+
+text = expr | rep_char_ws expr ;
+expr = expr_non_add | expr tok_add expr_non_add | expr tok_sub expr_non_add ;
+expr_non_add = expr_non_mul | expr_non_add tok_mul expr_non_mul | expr_non_add tok_div expr_non_mul ;
+expr_non_mul = expr_non_exp | expr_non_mul tok_exp expr_non_exp ;
+expr_non_exp = expr_paren | expr_func | int ;
+expr_paren = token_paren_l expr token_paren_r ;
+
+expr_func_3_rep = tok_comma expr | tok_comma expr expr_func_3_rep ;
+expr_func = func_name tok_paren_l expr tok_paren_r | func_name tok_paren_l expr expr_func_3_rep tok_paren_r ;

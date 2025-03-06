@@ -1,0 +1,13 @@
+char_digit_first_hundreds = "1" | "2" ;
+char_digit_non_zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+char_digit = char_digit_non_zero | "0" ;
+
+tok_byte = "0" 
+         | char_digit_non_zero
+         | char_digit_non_zero , char_digit
+         | "1" , char_digit , char_digit
+         | "2" , (("0" | "1" | "2" | "3" | "4" , char_digit)
+                | ("5" , ("0" | "1" | "2" | "3" | "4" | "5"))) ;
+tok_dot = "." ;
+
+text = tok_byte , tok_dot , tok_byte, tok_dot , tok_byte , tok_dot , tok_byte ;
