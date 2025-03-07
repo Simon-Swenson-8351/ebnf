@@ -1,0 +1,33 @@
+in_blk_cmnt -> ^(char_any* , "*/" , char_any*) ;
+comment -> (("#" | "//") , char_non_nl , "\n") | "/*" , in_blk_cmnt , "*/" ;
+text -> (rule | annot_blk)+ ;
+annot_blk -> annot , tok_curly_l , rule + , tok_curly_r ;
+rule -> annot? , tok_id , tok_arrow, expr ;
+annot -> tok_at , tok_id , (tok_paren_l , tok_id , (tok_comma, tok_id)?, tok_paren_r)?;
+# binary
+expr -> [expr, (tok_comma | tok_pipe | tok_minus)], expr_non_bin;
+expr_non_bin -> tok_carrot, expr_non_neg;
+expr_non_neg -> expr_non_qty;
+expr_non_bin -> (tok_carrot, expr_non_bin) | expr, (tok_aster | tok_plus | tok_qm | qty_sfx
+expr_choice -> expr , tok_pipe , expr ;
+expr_excl -> expr , tok_minus , expr ;
+# unary
+expr_0_or_more -> expr , tok_aster ;
+expr_1_or_more -> expr , tok_plus ;
+expr_opt_qm -> expr , tok_qm;
+expr_qty -> expr , tok_curly_l , tok_nat_num , tok_comma, tok_nat_num , tok_curly_r 
+          | expr , tok_curly_l , tok_nat_num , tok_comma,               tok_curly_r 
+          | expr , tok_curly_l ,               tok_comma, tok_nat_num , tok_curly_r 
+          | expr , tok_curly_l , tok_nat_num ,                          tok_curly_r 
+          ;
+expr_negation -> tok_carrot , expr ;
+expr_paren -> tok_paren_l , expr , tok_paren_r ;
+# lowest level
+expr_opt_sq -> tok_sq_l, expr, tok_sq_r;
+expr_0_or_more -> tok_curly_l, expr, tok_curly_r;
+expr_special -> tok_qm, char_non_qm, tok_qm ;
+expr_strlit -> tok_strlit ;
+expr_rulename -> tok_id ;
+
+exp_un -> expr_special | expr_0_or_more | expr_1_or_more | expr_opt | expr_qty ;
+exp_bin -> 
