@@ -1,14 +1,56 @@
-in_blk_cmnt -> ^(char_any* , "*/" , char_any*) ;
-comment -> (("#" | "//") , char_non_nl , "\n") | "/*" , in_blk_cmnt , "*/" ;
-text -> (rule | annot_blk)+ ;
-annot_blk -> annot , tok_curly_l , rule + , tok_curly_r ;
-rule -> annot? , tok_id , tok_arrow, expr ;
-annot -> tok_at , tok_id , (tok_paren_l , tok_id , (tok_comma, tok_id)?, tok_paren_r)?;
+#   Note: In the grammar below, the following rule names are not defined because they are built in.
+#   -   char_any
+#   -   char_whitespace
+#   -   char_alpha
+#   -   char_alphanumeric
+
+char_non_nl -> /[^\n]/;
+string_any -> /./, [string_any];
+in_blk_cmnt -> string_any - /.*\*\/.*/;
+comment -> /(#|\/\/)[^\n]*\n/ | /\/\*.*\*\//;
+ws -> (char_whitespace | comment)+;
+
+tok_at -> "@", ws?;
+tok_comma -> ",", ws?;
+tok_pipe -> "|", ws?;
+tok_minus -> "-", ws?;
+tok_paren_l -> "(", ws?;
+tok_paren_r -> ")", ws?;
+tok_curly_l -> "{", ws?;
+tok_curly_r -> "}", ws?;
+tok_sq_l -> "[", ws?;
+tok_sq_r -> "]", ws?;
+tok_id -> /[_a-zA-Z]/, /[_a-zA-Z0-9]*/, ws?;
+tok_arrow -> "->", ws?;
+tok_aster -> "*", ws?;
+tok_plus -> "+", ws?;
+tok_qm -> "?", ws?;
+
+text -> ws?, (rule | annot_blk)+;
+annot_blk -> annot*, tok_curly_l, rule+, tok_curly_r;
+rule -> annot*, tok_id , tok_arrow, expr ;
+annot -> tok_at , tok_id , [tok_paren_l , tok_id , [tok_comma, tok_id], tok_paren_r];
 # binary
-expr -> [expr, (tok_comma | tok_pipe | tok_minus)], expr_non_bin;
-expr_non_bin -> tok_carrot, expr_non_neg;
+expr -> expr_choice;
+expr_choice -> [expr_choice, tok_pipe], expr_cat;
+expr_cat -> [expr_cat, tok_comma], expr_excl;
+expr_excl -> [expr_excl, tok_minus], expr_excl_rhs;
+expr_excl_rhs -> expr_regex | expr_string;
+
+expr_qty -> expr_0_or_more_aster | expr_opt_qm | expr_1_or_more_plus;
+
+
+
+
+
 expr_non_neg -> expr_non_qty;
-expr_non_bin -> (tok_carrot, expr_non_bin) | expr, (tok_aster | tok_plus | tok_qm | qty_sfx
+expr_non_binary -> expr_non_unary, [tok_aster | tok_plus | tok_qm | qty_sfx];
+qty_sfx -> tok_curly_l, tok_nat_num, tok_comma, tok_nat_num, tok_curly_r 
+         | tok_curly_l, tok_nat_num, tok_comma,              tok_curly_r 
+         | tok_curly_l,              tok_comma, tok_nat_num, tok_curly_r 
+         | tok_curly_l, tok_nat_num,                         tok_curly_r 
+         ;
+expr_non_unary -> expr_0_or_more_paren | expr_optional_paren | expr_paren;
 expr_choice -> expr , tok_pipe , expr ;
 expr_excl -> expr , tok_minus , expr ;
 # unary
