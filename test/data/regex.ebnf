@@ -1,21 +1,27 @@
 expr -> quantified_atom+;
 quantified_atom -> atom, quantifier?;
 atom -> char | char_class | grouping;
-# escaped characters:
-#   escape character:
-#       \
-#   regex meta-characters:
-#       [ ] { } ( ) | : ? * + . ^ -
+#   escaped characters:
+#       escape character:
+#           \
+#       regex meta-characters:
+#           [ ] { } ( ) | ? * + . ^ -
+#           may need disambiguation in the top-level expression:
+#               [ { ( | ? * + .
+#           may need disambiguation in a character class:
+#               ] . ^ -
+#           may need disambiguation in a grouping:
+#               [ { ( ) | ? * + .
+#           For the sake of simplicity, if an opening brace needs to be escaped in a context, the closing brace should 
+#           need to be escaped as well, and vice versa.
 #   regex character classes:
 #       \w \W \d \D \s \S
 #   C escape characters (unprintable and/or hard to represent characters):
 #       \a \b \e \f \n \r \t \v \\ \ooo \xXX \uXXXX \UXXXXXXXX
-#       (Note: the trigraph is omitted in the grammar and will be omitted in the engine.)
-char -> /([^\[\]\{\}\(\)\|\:\?\*\+\.\^\-\\]|\\a|\\b|\\e|\\f|\\n|\\r|\\t|\\v|\\\\|\\[0-7]{3}|\\x[0-9a-f]{2}|\\u[0-9a-f]{4}|\\U[0-9a-f]{8}|\\\[|\\\]|\\\{|\\\}|\\\(|\\\)|\\\||\\\:|\\\?|\\\*|\\\+|\\\.|\\\^|\\\-|\\\\)/;
-char_class -> "[", "^"?, quantified_char_class_atom+, "]";
-quantified_char_class_atom -> char_class_atom, quantifier?;
+#       (Note: the trigraph escape \? is omitted in the grammar and will be omitted in the engine.)
+char -> /([^\[\]\{\}\(\)\|\?\*\+\.\^\-\\]|\\a|\\b|\\e|\\f|\\n|\\r|\\t|\\v|\\\\|\\[0-7]{3}|\\x[0-9a-f]{2}|\\u[0-9a-f]{4}|\\U[0-9a-f]{8}|\\\[|\\\]|\\\{|\\\}|\\\(|\\\)|\\\||\\\?|\\\*|\\\+|\\\.|\\\^|\\\-|\\\\)/;
+char_class -> "[", "^"?, char_class_atom+, "]";
 char_class_atom -> char | char_range;
 quantifier -> "?" | "*" | "+" | "{", natural_number, ",", natural_number "}" | "{,", natural_number, "}" | "{", natural_number, ",}" | "{", natural_number, "}";
-grouping -> "(", quantified_grouping_atom+, {"|", quantified_grouping_atom+}, ")";
-quantified_grouping_atom -> grouping_atom, quantifier?;
-grouping_atom -> char | char_class;
+natural_number -> "0" | /[1-9][0-9]*/;
+grouping -> "(", quantified_atom+, {"|", quantified_atom+}, ")";
